@@ -1,0 +1,9 @@
+faster-whisper>=1.2,<2
+sounddevice
+numpy<2
+protobuf>=4.25.3,<5
+pygame
+mediapipe
+opencv-python
+piper-tts
+aiohttp
