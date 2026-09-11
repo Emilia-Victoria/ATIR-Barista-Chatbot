@@ -8,7 +8,7 @@ import threading
 import time
 from collections import deque
 from typing import Awaitable, Callable, Optional
-
+import random
 import numpy as np
 import sounddevice as sd
 from faster_whisper import WhisperModel
@@ -271,6 +271,13 @@ class SpeechDetector:
             if " ".join(words[index + 3:]).count(phrase) >= 3:
                 return True
         return False
+
+    def buffer_talk(self)-> str:
+        # Buffer sentences
+        bff = ["Well...","Give me one moment", "I will get on it", "understood","Give me a sec", "Yep","Okay","OK"]
+        idx = random.randint(0,len(bff))
+        return bff[idx]
+
 
     def get_current_transcription(self) -> str:
         with self.transcription_lock:
