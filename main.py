@@ -27,6 +27,7 @@ class Robot:
     # State tracking
     last_speaking = False
     last_face_visible = False
+    conversation_started = False
     mouth_speaking = None
     face_visible = None
     head_x = None
@@ -71,6 +72,14 @@ class Robot:
         if self.face_visible != self.last_face_visible:
             if self.face_visible:
                 u.log(LOG_FILE, "👤 FACE DETECTED")
+
+                # Start conversation when a face appears
+                if not self.conversation_started:
+                    self.conversation_started = True
+                    time.sleep(1.0) 
+                    self.makeTheRobotSay(
+                    "Welcome to Café Analog! How can I help you?"
+                    )
             else:
                 u.log(LOG_FILE, "👤 FACE LOST")
             self.last_face_visible = self.face_visible
