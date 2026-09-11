@@ -12,6 +12,9 @@ from speech_handler import SpeechDetector
 from voice_handler import RobotVoice
 from llm_handler import AsyncLLMHandler, LLMResponse
 import threading
+import util as u
+
+LOG_FILE = "logfile_1"
 
 class Robot:
     """Manages robot state and responses"""
@@ -32,7 +35,7 @@ class Robot:
 
     def __init__(self):
         """Initialize all systems."""
-        print("Initializing robot")
+        u.log(LOG_FILE,"Initializing robot")
         self.robot_face = RobotFace()
         self.robot_face.start_animation("idle")
         self.face_detection = FaceDetector(speaking_threshold=0.04)
@@ -49,7 +52,7 @@ class Robot:
 
         speech_thread = threading.Thread(target=self.start_speech_detection, daemon=True)
         speech_thread.start()
-        print("Started background speech detection")
+        u.log(LOG_FILE, "Started background speech detection")
 
         # Let systems initialize
         time.sleep(1.0) 
@@ -67,14 +70,14 @@ class Robot:
         # Handle face detection changes
         if self.face_visible != self.last_face_visible:
             if self.face_visible:
-                print("👤 FACE DETECTED")
+                u.log(LOG_FILE, "👤 FACE DETECTED")
             else:
-                print("👤 FACE LOST")
+                u.log(LOG_FILE, "👤 FACE LOST")
             self.last_face_visible = self.face_visible
 
 
     async def handle_human_speech_end(self, transcription: str):
-        print(f"END: '{transcription}'")
+        u.log(LOG_FILE,f"END: '{transcription}'")
         if transcription:
             self.processWithLLM(transcription)
 
@@ -84,7 +87,7 @@ class Robot:
             speech_handler = self.speech_detection
 
             if not speech_handler.start():
-                print("Failed to start speech handler")
+                u.log(LOG_FILE, "Failed to start speech handler")
                 return
             
             try:
@@ -100,24 +103,24 @@ class Robot:
 
 
     def handle_LLM_chunk(self, chunk: str):
-        print(chunk, end='', flush=True)
-
+        u.log(LOG_FILE, chunk, end='', flush=True)
+        
     def handle_LLM_complete(self, response: LLMResponse):
-        print(f"\nComplete response received: {response.content}")
+        u.log(LOG_FILE, f"\nComplete response received: {response.content}")
         if response.success and response.content:
             self.makeTheRobotSay(response.content)
 
     def handleRobotVoiceEnded(self):
-        print("\n unpausing speech recognition \n")
+        u.log(LOG_FILE, "\n unpausing speech recognition \n")
         self.speech_detection.pause_voice_detection(False)
 
     def handleRobotVoiceStarted(self, text):
         # Pause transcription so the robot does not transcribe itself.
-        print("\n pausing speech recognition \n")
+        u.log(LOG_FILE, "\n pausing speech recognition \n")
         self.speech_detection.pause_voice_detection(True)
 
     def handleRobotVoiceInterrupted(self):
-        print("\n unpausing speech recognition after interruption \n")
+        u.log(LOG_FILE,"\n unpausing speech recognition after interruption \n")
         self.speech_detection.pause_voice_detection(False)
 
     def processWithLLM(self, utterance):
@@ -151,9 +154,9 @@ class Robot:
                 self.reactWithRobotFace()
                 
         except KeyboardInterrupt:
-            print("\n🛑 Shutdown requested...")
+            u.log(LOG_FILE,"\n🛑 Shutdown requested...")
         except Exception as e:
-            print(f"\n❌ Error in main loop: {e}")
+            u.log(LOG_FILE,f"\n❌ Error in main loop: {e}")
             import traceback
             traceback.print_exc()
         
