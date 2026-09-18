@@ -275,8 +275,7 @@ class SpeechDetector:
     def buffer_talk(self)-> str:
         # Buffer sentences
         bff = ["Well...","Give me one moment", "I will get on it", "understood","Give me a sec", "Yep","Okay","OK"]
-        idx = random.randint(0,len(bff))
-        return bff[idx]
+        return random.choice(bff)
 
 
     def get_current_transcription(self) -> str:

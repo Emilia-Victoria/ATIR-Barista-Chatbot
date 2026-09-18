@@ -5,7 +5,7 @@ import threading
 import time
 from typing import Optional, Callable
 import queue
-
+import random
 
 class RobotVoice:
     """
@@ -113,7 +113,7 @@ class RobotVoice:
 
         self._ensure_worker()
         self._queue.put(text)
-
+    
     def speak(self, text: str, blocking: bool = False, interrupt_current: bool = True) -> bool:
         """
         Convenience around enqueue(). If blocking=True, waits for the queue to become idle again.
@@ -296,6 +296,13 @@ class RobotVoice:
         except Exception:
             pass
 
+    def buffer_str(self)-> str:
+        # Buffer sentences
+        bff = ["Well...","Give me one moment", "I will get on it", "understood","Give me a sec", "Yep","Okay","OK"]
+        return random.choice(bff)
+
+    def buffer_talk(self):
+        self.speak(self.buffer_str())
 
 # Example usage
 if __name__ == "__main__":
