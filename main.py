@@ -89,7 +89,7 @@ class Robot:
         u.log(LOG_FILE,f"END: '{transcription}'")
         if transcription:
             self.processWithLLM(transcription)
-        self.robot_voice.speak(self.robot_voice.buffer_talk())
+        self.robot_voice.buffer_talk()
         
 
     def start_speech_detection(self):
