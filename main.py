@@ -102,7 +102,7 @@ class Robot:
             try:
                 await speech_handler.listen_with_voice_activity_detection(
                     voice_threshold=-40,
-                    silence_timeout=3.0,
+                    silence_timeout=1.5,
                     on_end=self.handle_human_speech_end
                 )
             finally:
